@@ -1,0 +1,20 @@
+services:
+  app:
+    image: nginx:latest
+    container_name: window_slideshow
+    restart: unless-stopped
+    expose:
+      - 80
+    volumes:
+      - "./html:/usr/share/nginx/html"
+    networks:
+      - web
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1000M
+
+networks:
+  web:
+    external: true

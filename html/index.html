@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Window Slideshow - Clarkson Open Source Institute</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        #SLIDE {
+            padding: 0;
+            margin: 0 auto;
+            display: block;
+            max-height: 100%;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <img id="SLIDE" onerror="advanceSlide(false)" onload="advanceSlide(true)">
+
+    <script>
+        /* Time each slide is displayed for */
+        const SLIDE_TIME_MS = 10000; // 10 seconds
+
+        /* Reload page after this delay */
+        const RELOAD_TIME_MS = 60000; // 10 minutes
+
+        const SLIDE = document.getElementById("SLIDE");
+
+        var current_slide = 0;
+
+        function displaySlide() {
+            SLIDE.src = `slides/${current_slide}.jpg`;
+        }
+
+        function advanceSlide(exists) {
+            if(exists) {
+                current_slide++;
+            } else {
+                current_slide = 0;
+                displaySlide()
+            }
+        }
+
+        /* ----- On page load ----- */ 
+
+        displaySlide()
+        setInterval(displaySlide, SLIDE_TIME_MS);
+        setInterval(window.location.reload, RELOAD_TIME_MS);
+    </script>
+</body>
+</html>
