@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: window_slideshow #WEEEEE!!!
+  name: window-slideshow #WEEEEE!!!
   namespace: cosi
   labels:
-    app: window_slideshow #DO NOT JST PUT "C"!!!
+    app: window-slideshow #DO NOT JST PUT "C"!!!
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: window_slideshow
+      app: window-slideshow
   template:
     metadata:
       labels:
-        app: window_slideshow
+        app: window-slideshow
     spec:
       containers:
-        - name: window_slideshow
-          image: registry.cosi.clarkson.edu/cosi-meta/window_slideshow
+        - name: window-slideshow
+          image: registry.cosi.clarkson.edu/cosi-meta/window-slideshow
           ports:
             - containerPort: 8080
           #CONECT TO THE POD HERE PT 1
           volumeMounts:
             - name: data
-              mountPath: /home/window_slideshow/window_slideshow/data
+              mountPath: /home/window-slideshow/window-slideshow/data
           #^^^
           resources:
             requests:
@@ -36,14 +36,14 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: window_slideshow-data # use name from PersistentVolumeClaim
+            claimName: window-slideshow-data # use name from PersistentVolumeClaim
       #^^^
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-    name: window_slideshow-data #Kabab case, USE FOR PART 2!
+    name: window-slideshow-data #Kabab case, USE FOR PART 2!
     namespace: cosi
 spec:
     accessModes:
@@ -56,10 +56,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: window_slideshow
+  name: window-slideshow
   namespace: cosi
 spec:
-  selector: {app: window_slideshow}
+  selector: {app: window-slideshow}
   ports:
     - port: 80
       targetPort: 8080 #The port you are using for the containerPort.
@@ -67,16 +67,16 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: window_slideshow-tls
+  name: window-slideshow-tls
   namespace: cosi
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`window_slideshow.cosi.clarkson.edu`)
+      match: Host(`window-slideshow.cosi.clarkson.edu`)
       services:
-        - name: window_slideshow
+        - name: window-slideshow
           port: 80
   tls:
     certResolver: le
@@ -84,13 +84,13 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: window_slideshow-redirect
+  name: window-slideshow-redirect
   namespace: cosi
 spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`window_slideshow.cosi.clarkson.edu`)
+  - match: Host(`window-slideshow.cosi.clarkson.edu`)
     kind: Rule
     middlewares:
     - name: https-redirect
@@ -98,3 +98,4 @@ spec:
     services: # stupid ass bullshit
         - name: noop@internal
           kind: TraefikService
+
