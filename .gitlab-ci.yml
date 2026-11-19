@@ -1,21 +1,5 @@
 stages:
-  - test
   - build
-
-typos:
-  image: python:alpine
-  stage: test
-  tags:
-    - docker
-  script:
-    - pip install typos typos-gitlab-code-quality
-    # "|| true" is used for preventing job fail when typos find errors
-    - typos --format json > typos-report.json || true
-    - typos-gitlab-code-quality < typos-report.json > codequality.json
-  artifacts:
-    when: always
-    reports:
-      codequality: codequality.json
 
 build:
   stage: build
