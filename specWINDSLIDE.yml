@@ -19,12 +19,8 @@ spec:
         - name: window-slideshow
           image: registry.cosi.clarkson.edu/cosi-meta/window-slideshow
           ports:
-            - containerPort: 8080
-          #CONECT TO THE POD HERE PT 1
-          volumeMounts:
-            - name: data
-              mountPath: /home/window-slideshow/window-slideshow/data
-          #^^^
+            - containerPort: 80
+          #no need for volumeMounts here check FSU
           resources:
             requests:
               cpu: 50m
@@ -32,12 +28,7 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
-      #CONECT TO THE POD HERE PT 2
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: window-slideshow-data # use name from PersistentVolumeClaim
-      #^^^
+      #no need for volume here check FSU
 ---
 
 apiVersion: v1
@@ -62,7 +53,7 @@ spec:
   selector: {app: window-slideshow}
   ports:
     - port: 80
-      targetPort: 8080 #The port you are using for the containerPort.
+      targetPort: 80 #The port you are using for the containerPort.
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -74,7 +65,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`window-slideshow.cosi.clarkson.edu`)
+      match: Host(`slides.cosi.clarkson.edu`) || Host(`slides.cslabs.clarkson.edu`)
       services:
         - name: window-slideshow
           port: 80
@@ -90,7 +81,7 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`window-slideshow.cosi.clarkson.edu`)
+  - match: Host(`slides.cosi.clarkson.edu`) || Host(`slides.cslabs.clarkson.edu`)
     kind: Rule
     middlewares:
     - name: https-redirect
@@ -98,4 +89,3 @@ spec:
     services: # stupid ass bullshit
         - name: noop@internal
           kind: TraefikService
-
