@@ -29,21 +29,18 @@ spec:
               cpu: 200m
               memory: 128Mi
       #no need for volume here check FSU
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-    name: window-slideshow-data #Kabab case, USE FOR PART 2!
-    namespace: cosi
-spec:
-    accessModes:
-    - ReadWriteMany #INFANET EDITS
-    storageClassName: longhorn #burg
-    resources:
-        requests:
-            storage: 2Gi
 #No need for a PVC
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: window-slideshow
+  namespace: cosi
+spec:
+  selector: {app: window-slideshow}
+  ports:
+    - port: 80
+      targetPort: 80 #The port you are using for the containerPort.
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
